@@ -1,0 +1,29 @@
+groups:
+  - name: alerta-maquina
+    rules:
+      - alert: CPUAlta
+        expr: 100 - (avg by(instance)(rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU alta na máquina"
+          description: "CPU acima de 80% por mais de 1 minuto"
+
+      - alert: MemoriaAlta
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 20
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Memória baixa"
+          description: "Menos de 20% de memória disponível"
+
+      - alert: DiscoCheio
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 20
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disco quase cheio"
+          description: "Menos de 20% de espaço livre"
